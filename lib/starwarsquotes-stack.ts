@@ -38,7 +38,7 @@ export class StarwarsquotesStack extends cdk.Stack {
       environment:  {
         'TABLE_NAME': table.tableName
         },
-        handler: "put.handler",
+        handler: "index.handler",
         entry: "quote_lambda/put.js",
         bundling: {
           externalModules: [
