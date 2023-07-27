@@ -50,10 +50,17 @@ export class StarwarsquotesStack extends cdk.Stack {
     table.grantWriteData(putLambda);
 
     // API Gateway
-    const api = new apigateway.RestApi(this, "Api");
+    const api = new apigateway.RestApi(this, "Api",{
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowMethods: apigateway.Cors.ALL_METHODS // this is also the default
+      }
+    });
 
-    api.root.addMethod("GET", new apigateway.LambdaIntegration(quoteLambda));
-    api.root.addMethod("POST", new apigateway.LambdaIntegration(putLambda));
+    const quotes = api.root.addResource('quotes')
+
+    quotes.addMethod("GET", new apigateway.LambdaIntegration(quoteLambda));
+    quotes.addMethod("POST", new apigateway.LambdaIntegration(putLambda));
     
     new cdk.CfnOutput(this, "Endpoint", {
       value: api.url!,
