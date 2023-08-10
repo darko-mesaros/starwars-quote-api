@@ -32,7 +32,7 @@ export default function App() {
   return (
     <div className="App">
       <div id="quote" style={mystyle}>
-        <h1>{darkoVader}</h1>
+        <h1 style={{height: "200px"}}>{darkoVader}</h1>
       </div>
       <div style={buttonstyle}>
         <button onClick={refreshPage}>Click to get new quote!</button>
