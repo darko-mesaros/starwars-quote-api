@@ -77,7 +77,7 @@ export class StarwarsquotesStack extends cdk.Stack {
             },
             "build": {
               "commands": [
-                "npm build"
+                "npm run build"
               ]
             }
           },
