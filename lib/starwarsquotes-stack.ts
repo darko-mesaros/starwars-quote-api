@@ -66,6 +66,35 @@ export class StarwarsquotesStack extends cdk.Stack {
         repository: 'starwars-quote-api',
         oauthToken: cdk.SecretValue.secretsManager('github-token')
       }),
+      buildSpec: cdk.aws_codebuild.BuildSpec.fromObjectToYaml({
+        "version": 0.1,
+        "frontend": {
+          "phases": {
+            "preBuild": {
+              "commands": [
+                "cd swquotes_fe"
+              ]
+            },
+            "build": {
+              "commands": [
+                "npm build"
+              ]
+            }
+          },
+          "artifacts": {
+            "baseDirectory": "swquotes_fe/build",
+            "files": [
+              "**/*"
+            ]
+          },
+          "cache": {
+            "paths": [
+              "swquotes_fe/node_modules/**/*"
+            ]
+          }
+        }
+      })
+      
     })
 
     amplifyApp.addBranch('mainbranch', {
