@@ -4,6 +4,7 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as nodejslambda from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as amplify from '@aws-cdk/aws-amplify-alpha'
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class StarwarsquotesStack extends cdk.Stack {
@@ -56,6 +57,21 @@ export class StarwarsquotesStack extends cdk.Stack {
         allowMethods: apigateway.Cors.ALL_METHODS // this is also the default
       }
     });
+
+    // Amplify Hosting
+    const amplifyApp = new amplify.App(this, 'Hosting', {
+      appName: 'starwars-frontend',
+      sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
+        owner: 'darko-mesaros',
+        repository: 'starwars-quote-api',
+        oauthToken: cdk.SecretValue.secretsManager('github-token')
+      }),
+    })
+
+    amplifyApp.addBranch('mainbranch', {
+      stage: 'PRODUCTION',
+      branchName: 'main'
+    })
 
     const quotes = api.root.addResource('quotes')
 
