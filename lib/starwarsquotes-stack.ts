@@ -72,7 +72,8 @@ export class StarwarsquotesStack extends cdk.Stack {
           "phases": {
             "preBuild": {
               "commands": [
-                "cd swquotes_fe"
+                "cd swquotes_fe",
+                "npm install"
               ]
             },
             "build": {
