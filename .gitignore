@@ -10,3 +10,6 @@ cdk.out
 # Lambda
 !quote_lambda/*.js
 
+# REACT
+!swquotes_fe/src/*.js
+
