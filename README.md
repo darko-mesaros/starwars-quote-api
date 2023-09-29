@@ -1,5 +1,29 @@
 # Welcome to our Build On Weekly Project - Star Wars quote generator
 
+Context
+
+- This a joke
+- This can be a vessel for different technologies
+- This will vend the most amazing star wars quotes
+
+Complication
+
+Having a DEMO application that is easy to show, share, upgrade, modify, and add new and exciting technolgies to it.
+- Requirements (Business, Technical)
+
+How do we make it so
+
+We create an amazing and funny Star Wars quotes app, but we have it built using the cloud, and infrastructe as code so its easy to modify.
+
+--- 
+
+Categories of Topics:
+- Requirements
+- Deploying it
+- Demoing
+- Breaking it down
+- Troubleshooting
+
 *THIS IS A WORK IN PROGRESS, DO NOT EXPECT PERFECTION (just yet 😎)*
 
 It started out as a joke, but it turned into a thing we seem to do. This simple API just returns a random Star Wars(tm) quote.

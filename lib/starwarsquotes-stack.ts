@@ -66,6 +66,7 @@ export class StarwarsquotesStack extends cdk.Stack {
         repository: 'starwars-quote-api',
         oauthToken: cdk.SecretValue.secretsManager('github-token')
       }),
+      
       buildSpec: cdk.aws_codebuild.BuildSpec.fromObjectToYaml({
         "version": 0.1,
         "frontend": {
