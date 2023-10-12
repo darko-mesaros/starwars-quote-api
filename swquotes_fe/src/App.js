@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import './App.css';
 export default function App() {
   const [darkoVader, setDarkoVader] = useState("");
   useEffect(() => {
     
     fetch(
-      "https://2cc8az4gnf.execute-api.us-west-2.amazonaws.com/prod/quotes"
+      "https://np99p7re91.execute-api.us-west-2.amazonaws.com/prod/quotes"
     )
       .then((res) => res.json())
       .then((data) => {

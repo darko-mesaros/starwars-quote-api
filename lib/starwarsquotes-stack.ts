@@ -4,8 +4,8 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as nodejslambda from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
-import * as amplify from '@aws-cdk/aws-amplify-alpha'
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as amplify from '@aws-cdk/aws-amplify-alpha';
+const path = require('path');
 
 export class StarwarsquotesStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -49,6 +49,23 @@ export class StarwarsquotesStack extends cdk.Stack {
     });
 
     table.grantWriteData(putLambda);
+
+    // Generate lambda
+    const generateLambda = new lambda.Function(this, 'generate-function',{
+      runtime: lambda.Runtime.PYTHON_3_10,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../resources/gen_lambda'),{
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_10.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output',
+          ],
+        }
+      }),
+    });
+    table.grantReadData(generateLambda);
 
     // API Gateway
     const api = new apigateway.RestApi(this, "Api",{
