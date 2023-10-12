@@ -5,6 +5,8 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as nodejslambda from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as amplify from '@aws-cdk/aws-amplify-alpha';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { Duration } from 'aws-cdk-lib';
 const path = require('path');
 
 export class StarwarsquotesStack extends cdk.Stack {
@@ -54,6 +56,7 @@ export class StarwarsquotesStack extends cdk.Stack {
     const generateLambda = new lambda.Function(this, 'generate-function',{
       runtime: lambda.Runtime.PYTHON_3_10,
       handler: 'index.handler',
+      timeout: Duration.seconds(60),
       code: lambda.Code.fromAsset(path.join(__dirname, '../resources/gen_lambda'),{
         bundling: {
           image: lambda.Runtime.PYTHON_3_10.bundlingImage,
@@ -65,13 +68,28 @@ export class StarwarsquotesStack extends cdk.Stack {
         }
       }),
     });
-    table.grantReadData(generateLambda);
+
+    const bedrockPolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'bedrock:InvokeModel',
+        'bedrock:InvokeModelWithResponseStream',
+      ],
+      resources: ['*']
+    })
+    
+    generateLambda.role?.attachInlinePolicy(
+      new iam.Policy(this, 'invoke_model_bedrock',{
+        statements: [bedrockPolicy],
+      })
+    );
 
     // API Gateway
     const api = new apigateway.RestApi(this, "Api",{
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: apigateway.Cors.ALL_METHODS // this is also the default
+        allowMethods: apigateway.Cors.ALL_METHODS, // this is also the default
+        allowHeaders: ['Content-Type', 'X-Amz-Date','Authorization','X-Api-Key','X-Amz-Security-Token']
       }
     });
 
@@ -125,6 +143,9 @@ export class StarwarsquotesStack extends cdk.Stack {
 
     quotes.addMethod("GET", new apigateway.LambdaIntegration(quoteLambda));
     quotes.addMethod("POST", new apigateway.LambdaIntegration(putLambda));
+
+    const genApi = quotes.addResource('generate')
+    genApi.addMethod("POST", new apigateway.LambdaIntegration(generateLambda));
     
     new cdk.CfnOutput(this, "Endpoint", {
       value: api.url!,
