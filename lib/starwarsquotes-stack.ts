@@ -25,7 +25,7 @@ export class StarwarsquotesStack extends cdk.Stack {
         'TABLE_NAME': table.tableName
         },
       handler: "index.handler",
-      entry: "quote_lambda/index.js",
+      entry: "resources/lambda/quote_lambda/index.js",
       bundling: {
         externalModules: [
           'aws-sdk'
@@ -42,7 +42,7 @@ export class StarwarsquotesStack extends cdk.Stack {
         'TABLE_NAME': table.tableName
         },
         handler: "index.handler",
-        entry: "quote_lambda/put.js",
+        entry: "resources/lambda/quote_lambda/put.js",
         bundling: {
           externalModules: [
             'aws-sdk'
@@ -57,7 +57,7 @@ export class StarwarsquotesStack extends cdk.Stack {
       runtime: lambda.Runtime.PYTHON_3_10,
       handler: 'index.handler',
       timeout: Duration.seconds(60),
-      code: lambda.Code.fromAsset(path.join(__dirname, '../resources/gen_lambda'),{
+      code: lambda.Code.fromAsset(path.join(__dirname, '../resources/lambda/gen_lambda'),{
         bundling: {
           image: lambda.Runtime.PYTHON_3_10.bundlingImage,
           command: [
@@ -108,7 +108,7 @@ export class StarwarsquotesStack extends cdk.Stack {
           "phases": {
             "preBuild": {
               "commands": [
-                "cd swquotes_fe",
+                "cd resources/frontend",
                 "npm ci"
               ]
             },
@@ -119,14 +119,14 @@ export class StarwarsquotesStack extends cdk.Stack {
             }
           },
           "artifacts": {
-            "baseDirectory": "swquotes_fe/build",
+            "baseDirectory": "resources/frontend/build",
             "files": [
               "**/*"
             ]
           },
           "cache": {
             "paths": [
-              "swquotes_fe/node_modules/**/*"
+              "resources/frontend/node_modules/**/*"
             ]
           }
         }
