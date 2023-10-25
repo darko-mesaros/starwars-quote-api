@@ -7,7 +7,7 @@ node_modules
 .cdk.staging
 cdk.out
 
-!resources/*.js
+!resources/frontend/src/*.js
 
 # Lambda
 !quote_lambda/*.js
