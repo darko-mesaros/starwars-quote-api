@@ -71,8 +71,8 @@ export default function App() {
       fontFamily: "Verdana"
     };
   const genstyle = {
-      color: "cyan",
-      backgroundColor: "green",
+      color: "red",
+      backgroundColor: "black",
       padding: "10px",
       fontFamily: "Verdana",
       fontSize: "12px"
@@ -85,6 +85,12 @@ export default function App() {
       margin:"auto",
       textAlign: "center"
     };
+  const headingstyle = {
+    width: "100%",
+    textAlign: "left",
+    fontSize: "12px",
+    fontFamily: "Verdana"
+  };
 
     // display the loading screen when I run the generateQuote function
     if (loading) {
@@ -116,9 +122,8 @@ export default function App() {
     >
     {({ signOut, user }) => (
       <div className="App">
-        <Heading level={1}>Hello Build On User: {user.username}</Heading>
-        <Button onClick={signOut}>Sing Out</Button>
-        <div id="quote" style={mystyle}>
+        <Heading style={headingstyle} level={1}>Hello Build On User: {user.username}</Heading>
+        <Button style={buttonstyle} onClick={signOut}>Sing Out</Button> <div id="quote" style={mystyle}>
           <h1 style={{height: "200px"}}>{darkoVader}</h1>
         </div>
         <div id="quote" style={genstyle}>
