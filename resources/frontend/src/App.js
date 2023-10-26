@@ -1,5 +1,21 @@
+import { Amplify } from 'aws-amplify';
+import awsExports from './aws-exports';
+
+import { useAuthenticator, withAuthenticator, Button, Heading, Authenticator, TextField } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+
 import { useState, useEffect } from "react";
 import './App.css';
+
+// Configure Amplify in index file or root file
+Amplify.configure({
+    Auth: {
+        region: awsExports.REGION,
+        userPoolId: awsExports.USER_POOL_ID,
+        userPoolWebClientId: awsExports.USER_POOL_APP_CLIENT_ID
+    }
+})
+
 export default function App() {
   const [darkoVader, setDarkoVader] = useState("");
   const [genData, setGenData] = useState("");
@@ -76,19 +92,47 @@ export default function App() {
     }
 
   return (
-    <div className="App">
-      <div id="quote" style={mystyle}>
-        <h1 style={{height: "200px"}}>{darkoVader}</h1>
+    <Authenticator
+      initialState ="signUp"
+      signUpAttributes = {['email']}
+      components={{
+        SignUp: {
+          FormFields() {
+            const {validationErrors}  = useAuthenticator();
+            return (
+              <>
+              <Authenticator.SignUp.FormFields />
+                <TextField
+                  placeholder="Zone Info"
+                  name="zoneinfo"
+                  label="Zone Info"
+                  type="text"
+                />
+             </>
+            );
+          },
+        },
+      }}
+    >
+    {({ signOut, user }) => (
+      <div className="App">
+        <Heading level={1}>Hello Build On User: {user.username}</Heading>
+        <Button onClick={signOut}>Sing Out</Button>
+        <div id="quote" style={mystyle}>
+          <h1 style={{height: "200px"}}>{darkoVader}</h1>
+        </div>
+        <div id="quote" style={genstyle}>
+          <h1 style={{height: "200px"}}>{genData.message}</h1>
+        </div>
+        <div style={buttonstyle}>
+          <button onClick={refreshPage}>Click to get new quote!</button>
+        </div>
+        <div style={buttonstyle}>
+          <button onClick={generateQuote}>How about GENERATED quote!</button>
+        </div>
       </div>
-      <div id="quote" style={genstyle}>
-        <h1 style={{height: "200px"}}>{genData.message}</h1>
-      </div>
-      <div style={buttonstyle}>
-        <button onClick={refreshPage}>Click to get new quote!</button>
-      </div>
-      <div style={buttonstyle}>
-        <button onClick={generateQuote}>How about GENERATED quote!</button>
-      </div>
-    </div>
+    )}
+  </Authenticator>
   );
 }
+
